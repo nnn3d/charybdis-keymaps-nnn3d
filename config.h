@@ -21,10 +21,8 @@
 #    define DYNAMIC_KEYMAP_LAYER_COUNT 3
 #endif // VIA_ENABLE
 
-/* Disable unused features. */
-#define NO_ACTION_ONESHOT
-#define NO_MUSIC_MODE
-#define LAYER_STATE_8BIT
+// nkro
+#define FORCE_NKRO
 
 #undef LOCKING_SUPPORT_ENABLE
 #undef LOCKING_RESYNC_ENABLE

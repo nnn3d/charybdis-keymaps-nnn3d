@@ -257,7 +257,7 @@ bool is_mouse_record_user(uint16_t keycode, keyrecord_t* record) {
     switch(keycode) {
         case KCT_DSL:
         case MOD_BN1:
-            return (get_mods() || get_weak_mods()) ? false : true;
+            return true;
         default:
             return false;
     }
@@ -401,10 +401,19 @@ bool pre_process_record_user(uint16_t keycode, keyrecord_t *record) {
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
         case MOD_BN1:
-            if (record->event.pressed) {
-                register_code16(KC_BTN1);
+            if (get_mods()) {
+                if (record->event.pressed) {
+                    auto_mouse_reset_trigger(true);
+                    register_code16(KC_F);
+                } else {
+                    unregister_code16(KC_F);
+                }
             } else {
-                unregister_code16(KC_BTN1);
+                if (record->event.pressed) {
+                    register_code16(KC_BTN1);
+                } else {
+                    unregister_code16(KC_BTN1);
+                }
             }
             return false;
         default:
@@ -453,12 +462,4 @@ void shutdown_user(void) {
     rgb_matrix_set_color_all(RGB_RED);
     rgb_matrix_update_pwm_buffers();
 #endif // RGB_MATRIX_ENABLE
-}
-
-// reduce size
-uint16_t keycode_config(uint16_t keycode) {
-    return keycode;
-}
-uint8_t mod_config(uint8_t mod) {
-    return mod;
 }
