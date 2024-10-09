@@ -16,6 +16,7 @@
  */
 #include QMK_KEYBOARD_H
 #include <math.h>
+#include <stdint.h>
 
 #ifdef CHARYBDIS_AUTO_POINTER_LAYER_TRIGGER_ENABLE
 #    include "timer.h"
@@ -150,7 +151,7 @@ enum custom_keycodes {
 #define MOD_BSLS RCTL_T(KC_BSLS)
 
 // d layer
-#define MLT_SPC ALT_T(KC_SPC)
+// #define MLT_SPC ALT_T(KC_SPC)
 
 #ifndef POINTING_DEVICE_ENABLE
 #    define DRGSCRL KC_NO
@@ -195,13 +196,13 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   // ╭──────────────────────────────────────────────────────╮ ╭──────────────────────────────────────────────────────╮
       EE_CLR,   KC_EXLM,   KC_AT, KC_HASH,  KC_DLR, KC_PERC,    KC_CIRC, KC_AMPR, KC_ASTR, KC_LPRN, KC_RPRN, KC_UNDS,
   // ├──────────────────────────────────────────────────────┤ ├──────────────────────────────────────────────────────┤
-   TO(LAYER_D), KC_PSLS,   KC_P7,   KC_P8,   KC_P9, KC_PAST,   KC_GRV,  KC_LCBR, KC_RCBR, KC_MINS, KC_PLUS,  KC_EQL,
+   TO(LAYER_D), KC_PSLS,    KC_7,    KC_8,    KC_9, KC_PAST,   KC_GRV,  KC_LCBR, KC_RCBR, KC_MINS, KC_PLUS,  KC_EQL,
   // ├──────────────────────────────────────────────────────┤ ├──────────────────────────────────────────────────────┤
-       _______, _______,   KC_P4,   KC_P5,   KC_P6, KC_PMNS,    KC_LBRC, KC_LPRN, KC_RPRN, KC_RBRC, KC_COLN, KCT_DQT,
+       _______, _______,    KC_4,    KC_5,    KC_6, KC_PMNS,    KC_LBRC, KC_LPRN, KC_RPRN, KC_RBRC, KC_COLN, KCT_DQT,
   // ├──────────────────────────────────────────────────────┤ ├──────────────────────────────────────────────────────┤
-       _______,  KC_NUM,   KC_P1,   KC_P2,   KC_P3, KC_PPLS,    KC_AMPR, KC_PIPE,   KC_LT,   KC_GT, KC_QUES, MOD_BSLS,
+       _______,  KC_NUM,    KC_1,    KC_2,    KC_3, KC_PPLS,    KC_AMPR, KC_PIPE,   KC_LT,   KC_GT, KC_QUES, MOD_BSLS,
   // ╰──────────────────────────────────────────────────────┤ ├──────────────────────────────────────────────────────╯
-                                    KC_P0, _______,  KC_EQL,    _______, S(KC_ENT),
+                                     KC_0, _______,  KC_EQL,    _______, S(KC_ENT),
                                            KC_PDOT, _______,    KC_UNDS
   //                            ╰───────────────────────────╯ ╰──────────────────╯
   ),
@@ -231,8 +232,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   // ├──────────────────────────────────────────────────────┤ ├──────────────────────────────────────────────────────┤
        _______,    KC_Z, _______, _______, _______, _______,    _______, _______, _______, _______, _______,TG(LAYER_D),
   // ╰──────────────────────────────────────────────────────┤ ├──────────────────────────────────────────────────────╯
-                               KC_LALT, MLT_SPC, LALT(KC_1),    _______, _______,
-                                         KC_LALT,      KC_5,    _______
+                             KC_LALT, _______, TT(LAYER_D2),    _______, _______,
+                                           _______, _______,    _______
   //                            ╰───────────────────────────╯ ╰──────────────────╯"
   ),
 
@@ -315,8 +316,11 @@ void process_mouse(report_mouse_t* mouse_report) {
         magnitude = magnitude + pow(magnitude, 2) / 25;
         uint16_t sum = abs(x) + abs(y);
 
-        mouse_report->x = (uint8_t)(magnitude * x / sum);
-        mouse_report->y = (uint8_t)(magnitude * y / sum);
+        int16_t resX = magnitude * x / sum;
+        int16_t resY = magnitude * y / sum;
+
+        mouse_report->x = (int8_t)(MAX(MIN(resX, INT8_MAX), INT8_MIN));
+        mouse_report->y = (int8_t)(MAX(MIN(resY, INT8_MAX), INT8_MIN));
     }
 }
 
@@ -386,13 +390,13 @@ bool pre_process_record_user(uint16_t keycode, keyrecord_t *record) {
     case TT_LOWER:
         charybdis_set_pointer_sniping_enabled(record->event.pressed);
         return true;
-    case MLT_SPC:
-        if (record->event.pressed) {
-            layer_on(LAYER_D2);
-        } else {
-            layer_off(LAYER_D2);
-        }
-        return true;
+    // case MLT_SPC:
+    //     if (record->event.pressed) {
+    //         layer_on(LAYER_D2);
+    //     } else {
+    //         layer_off(LAYER_D2);
+    //     }
+    //     return true;
     default:
         return true;
   }
