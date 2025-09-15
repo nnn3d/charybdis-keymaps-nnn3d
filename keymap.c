@@ -17,6 +17,7 @@
 #include QMK_KEYBOARD_H
 #include <math.h>
 #include <stdint.h>
+#include "usb_main.h"
 
 #ifdef CHARYBDIS_AUTO_POINTER_LAYER_TRIGGER_ENABLE
 #    include "timer.h"
@@ -503,3 +504,20 @@ void rgb_matrix_update_pwm_buffers(void);
 // #endif // RGB_MATRIX_ENABLE
 //     return true;
 // }
+
+// fix keayboard shut down on computer wake up with hub
+void suspend_wakeup_init_user(void) {
+
+    wait_ms(500);
+
+    usbDisconnectBus(&USB_DRIVER);
+    usbStop(&USB_DRIVER);
+    
+    wait_ms(1000);
+    
+    restart_usb_driver(&USB_DRIVER);
+
+    wait_ms(500);
+
+    clear_keyboard();
+}
