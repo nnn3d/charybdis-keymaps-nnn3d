@@ -1,10 +1,11 @@
 RGB_MATRIX_EFFECT(DEFAULT_ANIM)
 RGB_MATRIX_EFFECT(D_ANIM)
+RGB_MATRIX_EFFECT(DM_ANIM)
 
 #ifdef RGB_MATRIX_CUSTOM_EFFECT_IMPLS
 #ifdef RGB_MATRIX_KEYPRESSES
 
-bool run_default_effect(effect_params_t* params, bool red_mode) {
+bool run_default_effect(effect_params_t* params, bool red_mode, bool mouse_mode) {
     RGB_MATRIX_USE_LIMITS(led_min, led_max);
 
     uint8_t count = g_last_hit_tracker.count;
@@ -42,8 +43,12 @@ bool run_default_effect(effect_params_t* params, bool red_mode) {
             mod = mul8(abs(mod - 128), 2);
             mod = scale8(mod, pow(scale8(dist, 7), 2));
             uint8_t red = 5 + mod + scale8(hsv.v, rgb_matrix_config.hsv.v - 5 - mod);
+            uint8_t bg = 0;
+            if (mouse_mode && g_led_config.point[i].x >= 112 && g_led_config.point[i].y >= 36) {
+                bg = 1;
+            }
 
-            rgb_matrix_set_color(i, red, 0, 0);
+            rgb_matrix_set_color(i, red, bg, bg);
         } else {
             hsv.s = add8(100, scale8(hsv.v, 50));
             hsv.v = add8(40, scale8(hsv.v, sub8(rgb_matrix_config.hsv.v, 40)));
@@ -58,11 +63,15 @@ bool run_default_effect(effect_params_t* params, bool red_mode) {
 
 
 bool DEFAULT_ANIM(effect_params_t* params) {
-    return run_default_effect(params, false);
+    return run_default_effect(params, false, false);
 }
 
 bool D_ANIM(effect_params_t* params) {
-    return run_default_effect(params, true);
+    return run_default_effect(params, true, false);
+}
+
+bool DM_ANIM(effect_params_t* params) {
+    return run_default_effect(params, true, true);
 }
 
 

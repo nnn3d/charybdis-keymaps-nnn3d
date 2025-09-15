@@ -28,7 +28,9 @@ enum charybdis_keymap_layers {
     LAYER_RAISE,
     LAYER_POINTER,
     LAYER_D,
+    LAYER_DM,
     LAYER_D2,
+    LAYER_RAISE_NUM
 };
 
 // Tap Dance helpers
@@ -143,6 +145,7 @@ enum custom_keycodes {
 #define TT_LOWER TT(LAYER_LOWER)
 #define TT_RAISE TT(LAYER_RAISE)
 #define RZ_A LT(LAYER_RAISE, KC_A)
+#define RZN_LBRC LT(LAYER_RAISE_NUM, KC_LBRC)
 #define LWR_SCLN LT(LAYER_LOWER, KC_SCLN)
 #define MOD_SLH LT(LAYER_POINTER, KC_SLSH)
 #define MOD_Z    LCTL_T(KC_Z)
@@ -166,7 +169,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   // ╭───────────────────────────────────────────────-──────╮ ╭──────────────────────────────────────────────────────╮
         KC_ESC,    KC_1,    KC_2,    KC_3,    KC_4,    KC_5,       KC_6,    KC_7,    KC_8,    KC_9,    KC_0, KC_MINS,
   // ├──────────────────────────────────────────────────────┤ ├──────────────────────────────────────────────────────┤
-        KC_TAB,    KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,       KC_Y,    KC_U,    KC_I,    KC_O,    KC_P, KC_LBRC,
+        KC_TAB,    KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,       KC_Y,    KC_U,    KC_I,    KC_O,    KC_P, RZN_LBRC,
   // ├──────────────────────────────────────────────────────┤ ├──────────────────────────────────────────────────────┤
        KC_LSFT,    RZ_A,    KC_S,    KC_D,    KC_F,    KC_G,       KC_H,    KC_J,    KC_K,    KC_L,LWR_SCLN, MOD_QUOT,
   // ├──────────────────────────────────────────────────────┤ ├──────────────────────────────────────────────────────┤
@@ -181,7 +184,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   // ╭──────────────────────────────────────────────────────╮ ╭──────────────────────────────────────────────────────╮
         KC_F12,   KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,      KC_F6,   KC_F7,  KC_F8,   KC_F9,   KC_F10,  KC_F11,
   // ├──────────────────────────────────────────────────────┤ ├──────────────────────────────────────────────────────┤
-        KC_GRV,  KC_INS,   KC_NO, KC_WBAK, KC_WFWD, KC_PSCR,   XXXXXXX, KC_HOME,  KC_END, KC_MINS, KC_PLUS,  QK_BOOT,
+        KC_GRV,  KC_INS,   KC_NO, MS_BTN4, MS_BTN5, KC_PSCR,    XXXXXXX, KC_HOME,  KC_END, XXXXXXX,  EE_CLR, QK_BOOT,
   // ├──────────────────────────────────────────────────────┤ ├──────────────────────────────────────────────────────┤
        _______, DRGSCRL, KC_VOLD, KC_VOLU, KC_BTN1, XXXXXXX,    KC_LEFT, KC_DOWN,   KC_UP, KC_RGHT, _______, KC_RSFT,
   // ├──────────────────────────────────────────────────────┤ ├──────────────────────────────────────────────────────┤
@@ -202,8 +205,23 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   // ├──────────────────────────────────────────────────────┤ ├──────────────────────────────────────────────────────┤
        _______,  KC_NUM,    KC_1,    KC_2,    KC_3, KC_PPLS,    KC_AMPR, KC_PIPE,   KC_LT,   KC_GT, KC_QUES, MOD_BSLS,
   // ╰──────────────────────────────────────────────────────┤ ├──────────────────────────────────────────────────────╯
-                                     KC_0, _______,  KC_EQL,    _______, S(KC_ENT),
-                                           KC_PDOT, _______,    KC_UNDS
+                                     KC_0, _______,  KC_EQL,    KC_UNDS, S(KC_ENT),
+                                            KC_DOT, _______,    _______
+  //                            ╰───────────────────────────╯ ╰──────────────────╯
+  ),
+
+  [LAYER_RAISE_NUM] = LAYOUT(
+  // ╭──────────────────────────────────────────────────────╮ ╭──────────────────────────────────────────────────────╮
+      EE_CLR,   KC_EXLM,   KC_AT, KC_HASH,  KC_DLR, KC_PERC,    KC_CIRC, KC_AMPR, KC_ASTR, KC_LPRN, KC_RPRN, KC_UNDS,
+  // ├──────────────────────────────────────────────────────┤ ├──────────────────────────────────────────────────────┤
+   TO(LAYER_D), KC_PSLS,    KC_P7,  KC_P8,   KC_P9, KC_PAST,   KC_GRV,  KC_LCBR, KC_RCBR, KC_MINS, KC_PLUS,  _______,
+  // ├──────────────────────────────────────────────────────┤ ├──────────────────────────────────────────────────────┤
+       _______,   KC_P0,    KC_P4,  KC_P5,   KC_P6, KC_PMNS,    KC_LBRC, KC_LPRN, KC_RPRN, KC_RBRC, KC_COLN, KCT_DQT,
+  // ├──────────────────────────────────────────────────────┤ ├──────────────────────────────────────────────────────┤
+       _______,  KC_NUM,    KC_P1,  KC_P2,   KC_P3, KC_PPLS,    KC_AMPR, KC_PIPE,   KC_LT,   KC_GT, KC_QUES, MOD_BSLS,
+  // ╰──────────────────────────────────────────────────────┤ ├──────────────────────────────────────────────────────╯
+                                    KC_P0, _______,  KC_EQL,    KC_UNDS, S(KC_ENT),
+                                            KC_DOT, _______,    _______
   //                            ╰───────────────────────────╯ ╰──────────────────╯
   ),
 
@@ -230,11 +248,26 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   // ├──────────────────────────────────────────────────────┤ ├──────────────────────────────────────────────────────┤
        _______,    KC_A, _______, _______, _______, _______,    _______, _______, _______, _______, _______, _______,
   // ├──────────────────────────────────────────────────────┤ ├──────────────────────────────────────────────────────┤
-       _______,    KC_Z, _______, _______, _______, _______,    _______, _______, _______, _______, _______,TG(LAYER_D),
+       _______,    KC_Z, _______, _______, _______, _______,    _______, _______, _______, _______, _______,TO(LAYER_BASE),
   // ╰──────────────────────────────────────────────────────┤ ├──────────────────────────────────────────────────────╯
                              KC_LALT, _______, TT(LAYER_D2),    _______, _______,
-                                           _______, _______,    _______
+                                      TG(LAYER_DM), _______,    _______
   //                            ╰───────────────────────────╯ ╰──────────────────╯"
+  ),
+
+  [LAYER_DM] = LAYOUT(
+  // ╭──────────────────────────────────────────────────────╮ ╭──────────────────────────────────────────────────────╮
+       _______, _______, _______, _______, _______, _______,    _______, _______, _______, _______, _______, _______,
+  // ├──────────────────────────────────────────────────────┤ ├──────────────────────────────────────────────────────┤
+       _______, _______, _______, _______, _______, _______,    _______, _______, _______, _______, _______, _______,
+  // ├──────────────────────────────────────────────────────┤ ├──────────────────────────────────────────────────────┤
+       _______, _______, _______, _______, _______, _______,    _______, _______, _______, _______, _______, _______,
+  // ├──────────────────────────────────────────────────────┤ ├──────────────────────────────────────────────────────┤
+       _______, _______, _______, _______, _______, _______,    _______, KC_BTN1, KC_BTN2, KC_BTN3, KCT_DSL, _______,
+  // ╰──────────────────────────────────────────────────────┤ ├──────────────────────────────────────────────────────╯
+                                  _______, _______, _______,    _______, _______,
+                                           _______, _______,    _______
+  //                            ╰───────────────────────────╯ ╰──────────────────╯
   ),
 
   [LAYER_D2] = LAYOUT(
@@ -442,7 +475,9 @@ layer_state_t layer_state_set_user(layer_state_t state) {
     }
 
     // d layer anim
-    if (layer_state_cmp(state, LAYER_D)) {
+    if (layer_state_cmp(state, LAYER_DM)) {
+        rgb_matrix_mode(RGB_MATRIX_CUSTOM_DM_ANIM);
+    } else if (layer_state_cmp(state, LAYER_D)) {
         rgb_matrix_mode(RGB_MATRIX_CUSTOM_D_ANIM);
     } else {
         rgb_matrix_mode(RGB_MATRIX_DEFAULT_MODE);
@@ -456,14 +491,15 @@ layer_state_t layer_state_set_user(layer_state_t state) {
 void rgb_matrix_update_pwm_buffers(void);
 #endif
 
-void shutdown_user(void) {
-#ifdef RGBLIGHT_ENABLE
-    rgblight_enable_noeeprom();
-    rgblight_mode_noeeprom(1);
-    rgblight_setrgb(RGB_RED);
-#endif // RGBLIGHT_ENABLE
-#ifdef RGB_MATRIX_ENABLE
-    rgb_matrix_set_color_all(RGB_RED);
-    rgb_matrix_update_pwm_buffers();
-#endif // RGB_MATRIX_ENABLE
-}
+// bool shutdown_user(bool jump_to_bootloader) {
+// #ifdef RGBLIGHT_ENABLE
+//     rgblight_enable_noeeprom();
+//     rgblight_mode_noeeprom(1);
+//     rgblight_setrgb(RGB_RED);
+// #endif // RGBLIGHT_ENABLE
+// #ifdef RGB_MATRIX_ENABLE
+//     rgb_matrix_set_color_all(RGB_RED);
+//     rgb_matrix_update_pwm_buffers();
+// #endif // RGB_MATRIX_ENABLE
+//     return true;
+// }
