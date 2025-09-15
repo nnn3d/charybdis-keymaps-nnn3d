@@ -22,7 +22,7 @@
 #endif // VIA_ENABLE
 
 // nkro
-#define FORCE_NKRO
+#define NKRO_DEFAULT_ON true
 
 #undef LOCKING_SUPPORT_ENABLE
 #undef LOCKING_RESYNC_ENABLE
