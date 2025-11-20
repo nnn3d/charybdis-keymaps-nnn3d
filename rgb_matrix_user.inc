@@ -39,7 +39,7 @@ bool run_default_effect(effect_params_t* params, bool red_mode, bool mouse_mode)
             int16_t  dy   = g_led_config.point[i].y - 12;
             uint8_t  dist = sqrt16(dx * dx + dy * dy);
 
-            uint8_t mod = time;
+            uint8_t mod = time == 0 ? 1 : time;
             mod = mul8(abs(mod - 128), 2);
             mod = scale8(mod, pow(scale8(dist, 7), 2));
             uint8_t red = 5 + mod + scale8(hsv.v, rgb_matrix_config.hsv.v - 5 - mod);
