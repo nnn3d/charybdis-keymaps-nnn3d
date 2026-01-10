@@ -25,13 +25,14 @@
 
 enum charybdis_keymap_layers {
     LAYER_BASE = 0,
+    LAYER_D,
+    LAYER_DWASD,
+    LAYER_DM,
+    LAYER_D2,
+    LAYER_RAISE_NUM,
     LAYER_LOWER,
     LAYER_RAISE,
     LAYER_POINTER,
-    LAYER_D,
-    LAYER_DM,
-    LAYER_D2,
-    LAYER_RAISE_NUM
 };
 
 // Tap Dance helpers
@@ -140,7 +141,24 @@ void process_tap_hold_keys(uint16_t keycode, keyrecord_t *record) {
 
 enum custom_keycodes {
     MOD_BN1 = SAFE_RANGE,
+    // to d layer
+    MOD_TLD,
+    // d layer switch
+    MOD_LDS,
 };
+
+const uint8_t d_layers[] = { LAYER_D, LAYER_DWASD };
+
+#define NUM_D_LAYERS ARRAY_SIZE(d_layers)
+
+typedef union {
+    uint32_t raw;
+    struct {
+        uint8_t d_mode : 8; // 0..NUM_D_LAYERS-1
+    };
+} user_config_t;
+
+user_config_t user_config;
 
 // base
 #define TT_LOWER TT(LAYER_LOWER)
@@ -200,7 +218,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   // ╭──────────────────────────────────────────────────────╮ ╭──────────────────────────────────────────────────────╮
       EE_CLR,   KC_EXLM,   KC_AT, KC_HASH,  KC_DLR, KC_PERC,    KC_CIRC, KC_AMPR, KC_ASTR, KC_LPRN, KC_RPRN, KC_UNDS,
   // ├──────────────────────────────────────────────────────┤ ├──────────────────────────────────────────────────────┤
-   TO(LAYER_D), KC_PSLS,    KC_7,    KC_8,    KC_9, KC_PAST,   KC_GRV,  KC_LCBR, KC_RCBR, KC_MINS, KC_PLUS,  KC_EQL,
+      MOD_TLD,  KC_PSLS,    KC_7,    KC_8,    KC_9, KC_PAST,   KC_GRV,  KC_LCBR, KC_RCBR, KC_MINS, KC_PLUS,  KC_EQL,
   // ├──────────────────────────────────────────────────────┤ ├──────────────────────────────────────────────────────┤
        _______, _______,    KC_4,    KC_5,    KC_6, KC_PMNS,    KC_LBRC, KC_LPRN, KC_RPRN, KC_RBRC, KC_COLN, KCT_DQT,
   // ├──────────────────────────────────────────────────────┤ ├──────────────────────────────────────────────────────┤
@@ -215,7 +233,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   // ╭──────────────────────────────────────────────────────╮ ╭──────────────────────────────────────────────────────╮
       EE_CLR,   KC_EXLM,   KC_AT, KC_HASH,  KC_DLR, KC_PERC,    KC_CIRC, KC_AMPR, KC_ASTR, KC_LPRN, KC_RPRN, KC_UNDS,
   // ├──────────────────────────────────────────────────────┤ ├──────────────────────────────────────────────────────┤
-   TO(LAYER_D), KC_PSLS,    KC_P7,  KC_P8,   KC_P9, KC_PAST,   KC_GRV,  KC_LCBR, KC_RCBR, KC_MINS, KC_PLUS,  _______,
+      MOD_TLD,  KC_PSLS,    KC_P7,  KC_P8,   KC_P9, KC_PAST,   KC_GRV,  KC_LCBR, KC_RCBR, KC_MINS, KC_PLUS,  _______,
   // ├──────────────────────────────────────────────────────┤ ├──────────────────────────────────────────────────────┤
        _______,   KC_P0,    KC_P4,  KC_P5,   KC_P6, KC_PMNS,    KC_LBRC, KC_LPRN, KC_RPRN, KC_RBRC, KC_COLN, KCT_DQT,
   // ├──────────────────────────────────────────────────────┤ ├──────────────────────────────────────────────────────┤
@@ -251,9 +269,25 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   // ├──────────────────────────────────────────────────────┤ ├──────────────────────────────────────────────────────┤
        _______,    KC_Z, _______, _______, _______, _______,    _______, _______, _______, _______, _______,TO(LAYER_BASE),
   // ╰──────────────────────────────────────────────────────┤ ├──────────────────────────────────────────────────────╯
-                             KC_LALT, _______, TT(LAYER_D2),    _______, _______,
-                                      TG(LAYER_DM), _______,    _______
-  //                            ╰───────────────────────────╯ ╰──────────────────╯"
+                                  KC_LALT, _______, _______,    _______, _______,
+                                           MOD_LDS, _______,    _______
+  //                            ╰───────────────────────────╯ ╰──────────────────╯
+  ),
+
+
+  [LAYER_DWASD] = LAYOUT(
+  // ╭──────────────────────────────────────────────────────╮ ╭──────────────────────────────────────────────────────╮
+        KC_5,  KC_ESC,     KC_1,    KC_2,    KC_3,    KC_4,     _______, _______, _______, _______, _______, _______,
+  // ├──────────────────────────────────────────────────────┤ ├──────────────────────────────────────────────────────┤
+        KC_T,  KC_TAB,     KC_Q,    KC_W,    KC_E,    KC_R,     _______, _______, _______, _______, _______, _______,
+  // ├──────────────────────────────────────────────────────┤ ├──────────────────────────────────────────────────────┤
+        KC_G,  KC_LSFT,    KC_A,    KC_S,    KC_D,    KC_F,     _______, _______, _______, _______, _______, _______,
+  // ├──────────────────────────────────────────────────────┤ ├──────────────────────────────────────────────────────┤
+        KC_B,  KC_LCTL,    KC_Z,    KC_X,    KC_C,    KC_V,     _______, _______, _______, _______, _______,TO(LAYER_BASE),
+  // ╰──────────────────────────────────────────────────────┤ ├──────────────────────────────────────────────────────╯
+                                 KC_LALT, _______, _______,     _______, _______,
+                                          MOD_LDS, _______,     _______
+  //                            ╰───────────────────────────╯ ╰──────────────────╯
   ),
 
   [LAYER_DM] = LAYOUT(
@@ -301,6 +335,12 @@ bool is_mouse_record_user(uint16_t keycode, keyrecord_t* record) {
 void pointing_device_init_user(void) {
     set_auto_mouse_layer(LAYER_POINTER);
     set_auto_mouse_enable(true);
+}
+
+void keyboard_post_init_user(void) {
+    user_config.raw = eeconfig_read_user();
+
+    if (user_config.d_mode >= NUM_D_LAYERS) user_config.d_mode = 0;
 }
 
 static void process_scroll(report_mouse_t* mouse_report) {
@@ -454,6 +494,26 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 }
             }
             return false;
+
+        case MOD_TLD:
+            if (record->event.pressed) {
+                layer_on(d_layers[user_config.d_mode]);
+            }
+
+            return false;
+
+        case MOD_LDS:
+            if (record->event.pressed) {
+                layer_off(d_layers[user_config.d_mode]);
+
+                user_config.d_mode = (user_config.d_mode + 1) % NUM_D_LAYERS;
+                eeconfig_update_user(user_config.raw);
+                
+                layer_on(d_layers[user_config.d_mode]);
+            }
+
+            return false;
+            
         default:
             process_tap_hold_keys(keycode, record);
             return true;
@@ -466,6 +526,7 @@ layer_state_t layer_state_set_user(layer_state_t state) {
     switch(get_highest_layer(remove_auto_mouse_layer(state, true))) {
         case LAYER_BASE:
         case LAYER_D:
+        case LAYER_DWASD:
             set_auto_mouse_enable(true);
             break;
         default:
@@ -476,7 +537,7 @@ layer_state_t layer_state_set_user(layer_state_t state) {
     }
 
     // d layer anim
-    if (layer_state_cmp(state, LAYER_DM)) {
+    if (layer_state_cmp(state, LAYER_DWASD)) {
         rgb_matrix_mode(RGB_MATRIX_CUSTOM_DM_ANIM);
     } else if (layer_state_cmp(state, LAYER_D)) {
         rgb_matrix_mode(RGB_MATRIX_CUSTOM_D_ANIM);
@@ -513,7 +574,7 @@ void suspend_wakeup_init_user(void) {
     usbDisconnectBus(&USB_DRIVER);
     usbStop(&USB_DRIVER);
     
-    wait_ms(1000);
+    wait_ms(500);
     
     restart_usb_driver(&USB_DRIVER);
 
